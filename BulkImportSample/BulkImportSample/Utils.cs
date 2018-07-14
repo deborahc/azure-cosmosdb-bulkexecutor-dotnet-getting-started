@@ -67,19 +67,21 @@ namespace BulkImportSample
             return collection;
         }
 
-        static internal String GenerateRandomDocumentString(String id, String partitionKeyProperty, object parititonKeyValue)
+        static internal String GenerateRandomDocumentString(String id, String partitionKeyProperty, String parititonKeyValue)
         {
+            var eventTypes = new string[] { "Harsh_break", "Airbag_deploy", "Check_engine_light" };
+            string eventName = eventTypes[int.Parse(parititonKeyValue) % 3];
             return "{\n" +
                 "    \"id\": \"" + id + "\",\n" +
                 "    \"" + partitionKeyProperty + "\": \"" + parititonKeyValue + "\",\n" +
-                "    \"Name\": \"TestDoc\",\n" +
-                "    \"description\": \"1.99\",\n" +
-                "    \"f1\": \"3hrkjh3h4h4h3jk4h\",\n" +
-                "    \"f2\": \"dhfkjdhfhj4434434\",\n" +
-                "    \"f3\": \"nklfjeoirje434344\",\n" +
-                "    \"f4\": \"pjfgdgfhdgfgdhbd6\",\n" +
-                "    \"f5\": \"gyuerehvrerebrhjh\",\n" +
-                "    \"f6\": \"3434343ghghghgghj\"" +
+                "    \"EventName\": \"" + eventName + "\",\n" +
+                "    \"Description\": \"\",\n" +
+                "    \"s1\": \"38442291.3\",\n" +
+                "    \"s2\": \"23959381.2\",\n" +
+                "    \"s3\": \"148\",\n" +
+                "    \"s4\": \"323\",\n" +
+                "    \"s5\": \"32395.9\",\n" +
+                "    \"s6\": \"8732\"" +
                 "}";
         }
     }

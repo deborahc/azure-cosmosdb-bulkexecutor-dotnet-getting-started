@@ -43,12 +43,12 @@ namespace BulkImportSample
 
         public static void Main(string[] args)
         {
-            Trace.WriteLine("Summary:");
-            Trace.WriteLine("--------------------------------------------------------------------- ");
-            Trace.WriteLine(String.Format("Endpoint: {0}", EndpointUrl));
-            Trace.WriteLine(String.Format("Collection : {0}.{1}", DatabaseName, CollectionName));
-            Trace.WriteLine("--------------------------------------------------------------------- ");
-            Trace.WriteLine("");
+            Console.WriteLine("Summary:");
+            Console.WriteLine("--------------------------------------------------------------------- ");
+            Console.WriteLine(String.Format("Endpoint: {0}", EndpointUrl));
+            Console.WriteLine(String.Format("Collection : {0}.{1}", DatabaseName, CollectionName));
+            Console.WriteLine("--------------------------------------------------------------------- ");
+            Console.WriteLine("");
 
             try
             {
@@ -184,20 +184,32 @@ namespace BulkImportSample
                         }
                     } while (bulkImportResponse.NumberOfDocumentsImported < documentsToImportInBatch.Count);
 
-                    Trace.WriteLine(String.Format("\nSummary for batch {0}:", i));
-                    Trace.WriteLine("--------------------------------------------------------------------- ");
-                    Trace.WriteLine(String.Format("Inserted {0} docs @ {1} writes/s, {2} RU/s in {3} sec",
-                        bulkImportResponse.NumberOfDocumentsImported,
-                        Math.Round(bulkImportResponse.NumberOfDocumentsImported / bulkImportResponse.TotalTimeTaken.TotalSeconds),
-                        Math.Round(bulkImportResponse.TotalRequestUnitsConsumed / bulkImportResponse.TotalTimeTaken.TotalSeconds),
-                        bulkImportResponse.TotalTimeTaken.TotalSeconds));
-                    Trace.WriteLine(String.Format("Average RU consumption per document: {0}",
-                        (bulkImportResponse.TotalRequestUnitsConsumed / bulkImportResponse.NumberOfDocumentsImported)));
-                    Trace.WriteLine("---------------------------------------------------------------------\n ");
+                    //Trace.WriteLine(String.Format("\nSummary for batch {0}:", i));
+                    //Trace.WriteLine("--------------------------------------------------------------------- ");
+                    //Trace.WriteLine(String.Format("Inserted {0} docs @ {1} writes/s, {2} RU/s in {3} sec",
+                    //    bulkImportResponse.NumberOfDocumentsImported,
+                    //    Math.Round(bulkImportResponse.NumberOfDocumentsImported / bulkImportResponse.TotalTimeTaken.TotalSeconds),
+                    //    Math.Round(bulkImportResponse.TotalRequestUnitsConsumed / bulkImportResponse.TotalTimeTaken.TotalSeconds),
+                    //    bulkImportResponse.TotalTimeTaken.TotalSeconds));
+                    //Trace.WriteLine(String.Format("Average RU consumption per document: {0}",
+                    //    (bulkImportResponse.TotalRequestUnitsConsumed / bulkImportResponse.NumberOfDocumentsImported)));
+                    //Trace.WriteLine("---------------------------------------------------------------------\n ");
 
                     totalNumberOfDocumentsInserted += bulkImportResponse.NumberOfDocumentsImported;
                     totalRequestUnitsConsumed += bulkImportResponse.TotalRequestUnitsConsumed;
                     totalTimeTakenSec += bulkImportResponse.TotalTimeTaken.TotalSeconds;
+
+                    // Code to summarize running total:
+                    Console.WriteLine("--------------------------------------------------------------------- ");
+                    Console.WriteLine(String.Format("Inserted {0} docs @ {1} writes/s, {2} RU/s in {3} sec",
+                        totalNumberOfDocumentsInserted,
+                        Math.Round(totalNumberOfDocumentsInserted / totalTimeTakenSec),
+                        Math.Round(totalRequestUnitsConsumed / totalTimeTakenSec),
+                        totalTimeTakenSec));
+                    Console.WriteLine(String.Format("Average RU consumption per document: {0}",
+                        (totalRequestUnitsConsumed / totalNumberOfDocumentsInserted)));
+                    Console.WriteLine("--------------------------------------------------------------------- ");
+
                 },
                 token));
 
@@ -216,7 +228,7 @@ namespace BulkImportSample
                 await Task.WhenAll(tasks);
             }
 
-            Trace.WriteLine("Overall summary:");
+            Trace.WriteLine("Data Insert Completed: Overall summary:");
             Trace.WriteLine("--------------------------------------------------------------------- ");
             Trace.WriteLine(String.Format("Inserted {0} docs @ {1} writes/s, {2} RU/s in {3} sec",
                 totalNumberOfDocumentsInserted,
