@@ -10,7 +10,6 @@ namespace GlobalDemo
 {
     class Program
     {
-        private const string EndpointUri = "https://contoso-ready.documents.azure.com:443/";
         private static readonly string EndpointUrl = ConfigurationManager.AppSettings["EndPointUrl"];
         private static readonly string AuthorizationKey = ConfigurationManager.AppSettings["AuthorizationKey"];
         private static DocumentClient client;
@@ -29,7 +28,7 @@ namespace GlobalDemo
             connectionPolicy.PreferredLocations.Add(LocationNames.WestUS2); // third preference
             connectionPolicy.PreferredLocations.Add(LocationNames.SoutheastAsia); // second preference
 
-            client = new DocumentClient(new Uri(EndpointUri), AuthorizationKey, connectionPolicy: connectionPolicy);
+            client = new DocumentClient(new Uri(EndpointUrl), AuthorizationKey, connectionPolicy: connectionPolicy);
             client.OpenAsync().ConfigureAwait(false);
 
             while (true)
@@ -37,14 +36,14 @@ namespace GlobalDemo
                 var sw = new Stopwatch();
                 sw.Start();
 
-                FeedOptions feedOptions = new FeedOptions
+                var id = "36_9b913563-20d9-4156-8137-46b71709cc93";
+                var partitionKey = id.Split('_')[0];
+                RequestOptions requestOptions = new RequestOptions
                 {
-                    EnableCrossPartitionQuery = true
+                    PartitionKey = new PartitionKey(partitionKey)
                 };
-                // Read most recent document 
-                var query = "SELECT TOP 1 * FROM c WHERE c.EventName = 'Check_engine_light' ORDER BY c._ts desc";
-                //var document = client.CreateDocumentCollectionQuery(UriFactory.CreateDocumentCollectionUri("Demo", "VehicleData"), query, feedOptions).ToList().FirstOrDefault();
-                var document = client.CreateDocumentQuery<dynamic>(UriFactory.CreateDocumentCollectionUri("Demo", "VehicleData"), feedOptions, query).ToList().FirstOrDefault();
+
+                var document = client.ReadDocumentAsync(UriFactory.CreateDocumentUri("Demo", "VehicleData", id), requestOptions).Result;
 
                 sw.Stop();
 

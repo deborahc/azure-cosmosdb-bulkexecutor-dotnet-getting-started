@@ -148,7 +148,7 @@ namespace BulkImportSample
                 for (int j = 0; j < numberOfDocumentsPerBatch; j++)
                 {
                     string partitionKeyValue = (prefix + j).ToString();
-                    string id = partitionKeyValue + Guid.NewGuid().ToString();
+                    string id = partitionKeyValue + "_" + Guid.NewGuid().ToString();
 
                     documentsToImportInBatch.Add(Utils.GenerateRandomDocumentString(id, partitionKeyProperty, partitionKeyValue));
                 }
