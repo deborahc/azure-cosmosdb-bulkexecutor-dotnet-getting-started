@@ -30,20 +30,22 @@ namespace GlobalDemo
 
             client = new DocumentClient(new Uri(EndpointUrl), AuthorizationKey, connectionPolicy: connectionPolicy);
             client.OpenAsync().ConfigureAwait(false);
+            FeedOptions feedOptions = new FeedOptions
+            {
+                EnableCrossPartitionQuery = true,
+                MaxDegreeOfParallelism = 133
+            };
+
+            // Get latest record for vin = 99971. 
+            //var query = "SELECT TOP 1 * FROM c WHERE c.vin = 99971";
+            var query = "SELECT TOP 1 * FROM c WHERE c.newProp = 'red' and c.vin = 99971";
 
             while (true)
             {
                 var sw = new Stopwatch();
                 sw.Start();
-
-                var id = "8d93545f-eafb-4dda-9153-90d81618c2b5_736";
-                var partitionKey = id.Split('_')[1];
-                RequestOptions requestOptions = new RequestOptions
-                {
-                    PartitionKey = new PartitionKey(partitionKey)
-                };
-
-                var document = client.ReadDocumentAsync(UriFactory.CreateDocumentUri("Demo", "VehicleData", id), requestOptions).Result;
+                
+                var document = client.CreateDocumentQuery<dynamic>(UriFactory.CreateDocumentCollectionUri("Demo", "ReadyVehicleData"), query, feedOptions ).ToList().FirstOrDefault();
 
                 sw.Stop();
 
