@@ -36,8 +36,8 @@ namespace GlobalDemo
                 var sw = new Stopwatch();
                 sw.Start();
 
-                var id = "36_9b913563-20d9-4156-8137-46b71709cc93";
-                var partitionKey = id.Split('_')[0];
+                var id = "8d93545f-eafb-4dda-9153-90d81618c2b5_736";
+                var partitionKey = id.Split('_')[1];
                 RequestOptions requestOptions = new RequestOptions
                 {
                     PartitionKey = new PartitionKey(partitionKey)
